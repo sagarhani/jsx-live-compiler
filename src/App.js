@@ -1,28 +1,43 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
 
 class App extends Component {
-  render() {
+  constructor(){
+    super();
+    this.state = {
+      input: '/* Inset your JSX here */',
+      output: '',
+      error: ''
+    }
+  }
+  update(e){
+    let code = e.target.value;
+    try {
+      this.setState({
+        output: window.Babel
+        .transform(code, { presets: ['es2015', 'react']})
+        .code,
+        error: ''
+      })
+    }
+    catch(error){
+      this.setState({error: error.message})
+    }
+  }
+  render(){
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+        <header>{this.state.error}</header>
+        <div className="container">
+          <textarea
+          onChange={this.update.bind(this)}
+          defaultValue={this.state.input}/>
+          <pre>
+            {this.state.output}
+          </pre>
+        </div>
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App
